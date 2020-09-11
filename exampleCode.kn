@@ -1,3 +1,9 @@
-number.is(1);
-result.is(number.plus(5).plus(number));
+numberValue.is(1);
+result.is(numberValue.plus(5).plus(numberValue));
 result.print();
+
+stringValue.is('Hello');
+greeting.is(stringValue.concat(' world!'));
+greeting.print();
+
+
