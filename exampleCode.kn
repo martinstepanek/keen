@@ -1,0 +1,3 @@
+number.is(1);
+result.is(number.plus(5).plus(number));
+result.print();
