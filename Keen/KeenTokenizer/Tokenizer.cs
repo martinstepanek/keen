@@ -25,7 +25,8 @@ namespace KeenTokenizer
 
         private void CleanCode()
         {
-            _code = Regex.Replace(_code, @"\s+", "");
+            // replace all white spaces except ones in single quotes (')
+            _code = Regex.Replace(_code, @"[ ]+(?=[^']*(?:'[^']*'[^']*)*$)", "");
         }
 
         private void Tokenize()
@@ -36,6 +37,27 @@ namespace KeenTokenizer
             for (int i = 0; i < _code.Length; i++)
             {
                 char ch = _code[i];
+
+                if (ch != '\'' && _currentToken is QuotedContent)
+                {
+                    _currentToken.Value += ch;
+                    continue;
+                }
+                
+                if (ch == '\'')
+                {
+                    if (!(_currentToken is QuotedContent))
+                    {
+                        // beginning of quotes
+                        StashCurrentToken();
+                        _currentToken = new QuotedContent();
+                    }
+                    else
+                    {
+                        // end of quotes
+                        StashCurrentToken();
+                    }
+                }
 
                 if (Char.IsLetter(ch))
                 {
@@ -79,7 +101,7 @@ namespace KeenTokenizer
                     _currentToken = new Semicolon();
                     StashCurrentToken();
                 }
-                
+
                 if (ch == '.')
                 {
                     StashCurrentToken();
@@ -87,6 +109,7 @@ namespace KeenTokenizer
                     StashCurrentToken();
                 }
             }
+
             StashCurrentToken();
         }
 
