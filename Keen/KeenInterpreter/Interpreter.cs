@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using KeenActionParser.Expressions;
 using KeenInterpreter.Functions;
@@ -7,12 +8,13 @@ namespace KeenInterpreter
     public class Interpreter
     {
         private List<BuiltInFunction> _builtInFunctions = new List<BuiltInFunction>();
-        private Dictionary<string, string> _variables = new Dictionary<string, string>();
+        private Dictionary<string, StoredVariable> _variables = new Dictionary<string, StoredVariable>();
 
         public Interpreter()
         {
             _builtInFunctions.Add(new PrintFunction());
             _builtInFunctions.Add(new PlusFunction());
+            _builtInFunctions.Add(new ConcatFunction());
         }
 
         public void Run(List<Expression> expressions)
@@ -23,38 +25,64 @@ namespace KeenInterpreter
             }
         }
 
-        public string Run(Expression expression)
+        public ExpressionResult Run(Expression expression)
         {
             if (expression is Literal)
             {
-                return (expression as Literal).Value;
+                return new ExpressionResult()
+                {
+                    Value = (expression as Literal).Value,
+                    Type = (expression as Literal).Type,
+                };
             }
 
             if (expression is Variable)
             {
-                return _variables[(expression as Variable).Name];
+                var variable = _variables[(expression as Variable).Name];
+                return new ExpressionResult()
+                {
+                    Value = variable.Value,
+                    Type = variable.Type,
+                };
             }
 
             if (expression is Assignment)
             {
                 var assignment = (expression as Assignment);
-                _variables.Add(assignment.VariableName, Run(assignment.Expression));
+                var result = Run(assignment.Expression);
+                var storedVariables = new StoredVariable()
+                {
+                    Value = result.Value,
+                    Type = result.Type,
+                };
+                _variables.Add(assignment.VariableName, storedVariables);
+                return new ExpressionResult()
+                {
+                    Value = result.Value,
+                    Type = result.Type,
+                };
             }
 
             if (expression is Function)
             {
                 var function = (expression as Function);
-                var builtInFunction = _builtInFunctions.Find(_builtInFunction => _builtInFunction.Name == function.Name);
+                var builtInFunction =
+                    _builtInFunctions.Find(_builtInFunction => _builtInFunction.Name == function.Name);
+                if (builtInFunction == null)
+                {
+                    throw new Exception("Unknown function: " + function.Name);
+                }
 
-                var functionParams = new List<string>();
+                var functionParams = new List<ExpressionResult>();
                 foreach (var functionParam in function.Params)
-                {    
+                {
                     functionParams.Add(Run(functionParam));
                 }
+
                 return builtInFunction.Run(functionParams);
             }
 
-            return "";
+            throw new Exception("Unexpected expression: " + expression.GetType());
         }
     }
 }

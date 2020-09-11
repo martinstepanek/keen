@@ -65,6 +65,14 @@ namespace KeenActionParser
             {
                 var literal = new Literal();
                 literal.Value = node.Value.Value;
+                literal.Type = DataType.Number;
+                return literal;
+            }
+            if (node.Value is QuotedContent)
+            {
+                var literal = new Literal();
+                literal.Value = node.Value.Value;
+                literal.Type = DataType.String;
                 return literal;
             }
 

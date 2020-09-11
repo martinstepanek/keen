@@ -6,7 +6,7 @@ namespace KeenInterpreter.Functions
     {
 
         public abstract string Name { get; }
-        public abstract string Run(List<string> parameters);
+        public abstract ExpressionResult Run(List<ExpressionResult> parameters);
 
     }
 }

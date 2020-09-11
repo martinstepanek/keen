@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using KeenActionParser;
 
 namespace KeenInterpreter.Functions
 {
@@ -6,16 +7,20 @@ namespace KeenInterpreter.Functions
     {
         public override string Name => "plus";
 
-        public override string Run(List<string> parameters)
+        public override ExpressionResult Run(List<ExpressionResult> parameters)
         {
             double sum = 0;
 
             foreach (var parameter in parameters)
             {
-                sum += int.Parse(parameter);
+                sum += int.Parse(parameter.Value);
             }
 
-            return sum.ToString();
+            return new ExpressionResult()
+            {
+                Value = sum.ToString(),
+                Type = DataType.Number,
+            };
         }
     }
 }

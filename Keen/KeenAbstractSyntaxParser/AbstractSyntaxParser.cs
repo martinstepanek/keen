@@ -102,7 +102,7 @@ namespace KeenAbstractSyntaxParser
                 return node;
             }
 
-            if (lastToken is Word || lastToken is Number)
+            if (lastToken is Word || lastToken is Number || lastToken is QuotedContent)
             {
                 return new Node {Value = lastToken};
             }

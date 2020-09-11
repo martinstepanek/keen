@@ -1,9 +1,10 @@
-namespace KeenActionParser.Expressions
+using KeenActionParser;
+
+namespace KeenInterpreter
 {
-    public class Literal : Expression
+    public class ExpressionResult 
     {
         public string Value { get; set; }
         public DataType Type { get; set; }
-        
     }
 }
