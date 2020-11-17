@@ -7,7 +7,7 @@ namespace KeenInterpreter.Functions
     {
         public override string Name => "plus";
 
-        public override ExpressionResult Run(List<ExpressionResult> parameters)
+        protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
             double sum = 0;
 
@@ -22,5 +22,7 @@ namespace KeenInterpreter.Functions
                 Type = DataType.Number,
             };
         }
+        
+        protected override List<DataType> ParameterTypes => new List<DataType> {DataType.Number};
     }
 }

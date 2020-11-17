@@ -8,7 +8,7 @@ namespace KeenInterpreter.Functions
     {
         public override string Name => "print";
 
-        public override ExpressionResult Run(List<ExpressionResult> parameters)
+        protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
             foreach (var parameter in parameters)
             {
@@ -21,5 +21,7 @@ namespace KeenInterpreter.Functions
                 Type = DataType.Number,
             };
         }
+
+        protected override List<DataType> ParameterTypes => new List<DataType> {DataType.String};
     }
 }

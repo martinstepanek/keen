@@ -13,6 +13,7 @@ namespace KeenInterpreter
         public Interpreter()
         {
             _builtInFunctions.Add(new PrintFunction());
+            _builtInFunctions.Add(new ReadFunction());
             _builtInFunctions.Add(new PlusFunction());
             _builtInFunctions.Add(new ConcatFunction());
         }
@@ -79,7 +80,7 @@ namespace KeenInterpreter
                     functionParams.Add(Run(functionParam));
                 }
 
-                return builtInFunction.Run(functionParams);
+                return builtInFunction.Execute(functionParams);
             }
 
             throw new Exception("Unexpected expression: " + expression.GetType());

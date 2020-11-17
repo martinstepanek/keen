@@ -7,7 +7,7 @@ namespace KeenInterpreter.Functions
     {
         public override string Name => "concat";
 
-        public override ExpressionResult Run(List<ExpressionResult> parameters)
+        protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
             string result = "";
             foreach (var parameter in parameters)
@@ -21,5 +21,7 @@ namespace KeenInterpreter.Functions
                 Type = DataType.String,
             };
         }
+        
+        protected override List<DataType> ParameterTypes => new List<DataType> {DataType.String};
     }
 }
