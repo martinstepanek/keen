@@ -35,19 +35,35 @@ namespace KeenActionParser
         {
             if (node.Value is Word)
             {
-                if (node.FirstChild != null || node.SecondChild != null)
+                if (node.FirstChild != null)
                 {
                     if (node.Value.Value == "is")
                     {
-                        var assignment = new Assignment();
-                        assignment.VariableName = node.FirstChild.Value.Value;
-                        assignment.Expression = CreateExpression(node.SecondChild);
+                        if (node.SecondChild == null)
+                        {
+                            // TODO: throw empty assigment exception
+                        }
+
+                        var assignment = new Assignment
+                        {
+                            VariableName = node.FirstChild.Value.Value,
+                            Expression = CreateExpression(node.SecondChild)
+                        };
                         return assignment;
                     }
 
-                    var function = new Function();
-                    function.Name = node.Value.Value;
-                    function.Params.Add(CreateExpression(node.FirstChild));
+                    var function = new Function {Name = node.Value.Value};
+
+                    var firstChildExpression = CreateExpression(node.FirstChild);
+                    if (firstChildExpression is StaticType type)
+                    {
+                        function.StaticType = type;
+                    }
+                    else
+                    {
+                        function.Params.Add(firstChildExpression);
+                    }
+
                     if (node.SecondChild != null)
                     {
                         function.Params.Add(CreateExpression(node.SecondChild));
@@ -56,23 +72,31 @@ namespace KeenActionParser
                     return function;
                 }
 
-                var variable = new Variable();
-                variable.Name = node.Value.Value;
+                if (node.Value.Value == "string")
+                {
+                    var type = new StaticType {Type = DataType.String};
+                    return type;
+                }
+
+                if (node.Value.Value == "number")
+                {
+                    var type = new StaticType {Type = DataType.Number};
+                    return type;
+                }
+
+                var variable = new Variable {Name = node.Value.Value};
                 return variable;
             }
 
             if (node.Value is Number)
             {
-                var literal = new Literal();
-                literal.Value = node.Value.Value;
-                literal.Type = DataType.Number;
+                var literal = new Literal {Value = node.Value.Value, Type = DataType.Number};
                 return literal;
             }
+
             if (node.Value is QuotedContent)
             {
-                var literal = new Literal();
-                literal.Value = node.Value.Value;
-                literal.Type = DataType.String;
+                var literal = new Literal {Value = node.Value.Value, Type = DataType.String};
                 return literal;
             }
 

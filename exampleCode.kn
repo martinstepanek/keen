@@ -7,3 +7,17 @@ greeting.is(stringValue.concat(' world!'));
 greeting.print();
 
 
+
+textA.is('First number:');
+textB.is('Second number:');
+textResult.is('Result of sum:');
+
+textA.print();
+a.is(number.read());
+textB.print();
+b.is(number.read());
+
+textResult.print();
+a.plus(b).print();
+
+
