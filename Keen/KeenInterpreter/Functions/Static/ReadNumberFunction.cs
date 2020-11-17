@@ -14,6 +14,11 @@ namespace KeenInterpreter.Functions.Static
         {
             string value = Console.ReadLine();
 
+            if (!int.TryParse(value, out _))
+            {
+                // TODO: throw invalid input parameter, expected type: number
+            }
+
             return new ExpressionResult()
             {
                 Value = value,
@@ -21,6 +26,6 @@ namespace KeenInterpreter.Functions.Static
             };
         }
 
-        protected override List<DataType> ParameterTypes => new List<DataType> {};
+        protected override List<DataType> ParameterTypes => new List<DataType>();
     }
 }
