@@ -2,7 +2,12 @@ Interpreter for my own programming language created only for study purpose
 
 Runnable example: 
 ```
-number.is(1);
-result.is(number.plus(5).plus(number));
-result.print();
+'First number:'.print();
+a.is(number.read());
+
+'Second number:'.print();
+b.is(number.read());
+
+'Result of sum:'.print();
+a.plus(b).print();
 ```
