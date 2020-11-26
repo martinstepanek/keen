@@ -6,7 +6,7 @@ namespace KeenAbstractSyntaxParser
 {
     public class AbstractSyntaxParser
     {
-        private List<Token> _tokens;
+        private readonly List<Token> _tokens;
         private List<Node> _nodes;
 
         public AbstractSyntaxParser(List<Token> tokens)
@@ -36,7 +36,7 @@ namespace KeenAbstractSyntaxParser
             var stack = new Stack<BracketPair>();
             var pairs = new List<BracketPair>();
 
-            for (int i = 0; i < tokens.Count; i++)
+            for (var i = 0; i < tokens.Count; i++)
             {
                 if (tokens[i] is OpeningBracket)
                 {
@@ -110,7 +110,7 @@ namespace KeenAbstractSyntaxParser
             throw new Exception("Unexpected token: " + lastToken.GetType());
         }
 
-        private List<List<Token>> GetRowTokens()
+        private IEnumerable<List<Token>> GetRowTokens()
         {
             var rowTokens = new List<List<Token>>();
             var currentRowToken = new List<Token>();
