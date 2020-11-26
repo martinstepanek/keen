@@ -12,15 +12,15 @@ namespace KeenInterpreter.Functions.Static
 
         protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
-            string value = Console.ReadLine();
+            var value = Console.ReadLine();
 
-            return new ExpressionResult()
+            return new ExpressionResult
             {
                 Value = value,
                 Type = DataType.String,
             };
         }
 
-        protected override List<DataType> ParameterTypes => new List<DataType> {};
+        protected override List<DataType> ParameterTypes => new List<DataType>();
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using KeenActionParser;
 
 namespace KeenInterpreter.Functions
@@ -9,11 +10,7 @@ namespace KeenInterpreter.Functions
 
         protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
-            string result = "";
-            foreach (var parameter in parameters)
-            {
-                result += parameter.Value;
-            }
+            var result = parameters.Aggregate("", (current, parameter) => current + parameter.Value);
 
             return new ExpressionResult()
             {

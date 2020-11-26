@@ -12,14 +12,14 @@ namespace KeenInterpreter.Functions.Static
 
         protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
-            string value = Console.ReadLine();
+            var value = Console.ReadLine();
 
             if (!int.TryParse(value, out _))
             {
                 // TODO: throw invalid input parameter, expected type: number
             }
 
-            return new ExpressionResult()
+            return new ExpressionResult
             {
                 Value = value,
                 Type = DataType.Number,
