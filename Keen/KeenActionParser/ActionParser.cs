@@ -8,15 +8,15 @@ namespace KeenActionParser
 {
     public class ActionParser
     {
-        public List<Node> _nodes;
-        public List<Expression> _expressions;
+        private readonly List<Node> _nodes;
+        private List<Expression> _expressions;
 
         public ActionParser(List<Node> nodes)
         {
             _nodes = nodes;
         }
 
-        public List<Expression> GetExpressions()
+        public IEnumerable<Expression> GetExpressions()
         {
             Parse();
             return _expressions;
