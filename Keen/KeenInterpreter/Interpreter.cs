@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using KeenActionParser.Expressions;
 using KeenInterpreter.Functions;
 using KeenInterpreter.Functions.Static;
@@ -8,9 +9,9 @@ namespace KeenInterpreter
 {
     public class Interpreter
     {
-        private List<BuiltInFunction> _builtInFunctions = new List<BuiltInFunction>();
-        private List<StaticBuiltInFunction> _staticBuiltInFunctions = new List<StaticBuiltInFunction>();
-        private Dictionary<string, StoredVariable> _variables = new Dictionary<string, StoredVariable>();
+        private readonly List<BuiltInFunction> _builtInFunctions = new List<BuiltInFunction>();
+        private readonly List<StaticBuiltInFunction> _staticBuiltInFunctions = new List<StaticBuiltInFunction>();
+        private readonly Dictionary<string, StoredVariable> _variables = new Dictionary<string, StoredVariable>();
 
         public Interpreter()
         {
@@ -22,7 +23,7 @@ namespace KeenInterpreter
             _staticBuiltInFunctions.Add(new ReadNumberFunction());
         }
 
-        public void Run(List<Expression> expressions)
+        public void Run(IEnumerable<Expression> expressions)
         {
             foreach (var expression in expressions)
             {
@@ -30,61 +31,55 @@ namespace KeenInterpreter
             }
         }
 
-        public ExpressionResult Run(Expression expression)
+        private ExpressionResult Run(Expression expression)
         {
-            if (expression is Literal)
+            switch (expression)
             {
-                return new ExpressionResult()
+                case Literal literal:
+                    return new ExpressionResult
+                    {
+                        Value = literal.Value,
+                        Type = literal.Type,
+                    };
+                case Variable variable:
                 {
-                    Value = (expression as Literal).Value,
-                    Type = (expression as Literal).Type,
-                };
+                    var storedVariable = _variables[variable.Name];
+                    return new ExpressionResult
+                    {
+                        Value = storedVariable.Value,
+                        Type = storedVariable.Type,
+                    };
+                }
+                case Assignment assignment:
+                    return RunAssignment(assignment);
+                case Function function:
+                    return RunFunction(function);
+                default:
+                    throw new Exception("Unexpected expression: " + expression.GetType());
             }
+        }
 
-            if (expression is Variable)
+        private ExpressionResult RunAssignment(Assignment assignment)
+        {
+            var result = Run(assignment.Expression);
+            var storedVariables = new StoredVariable
             {
-                var variable = _variables[(expression as Variable).Name];
-                return new ExpressionResult()
-                {
-                    Value = variable.Value,
-                    Type = variable.Type,
-                };
-            }
-
-            if (expression is Assignment)
+                Value = result.Value,
+                Type = result.Type,
+            };
+            _variables.Add(assignment.VariableName, storedVariables);
+            return new ExpressionResult
             {
-                var assignment = (expression as Assignment);
-                var result = Run(assignment.Expression);
-                var storedVariables = new StoredVariable()
-                {
-                    Value = result.Value,
-                    Type = result.Type,
-                };
-                _variables.Add(assignment.VariableName, storedVariables);
-                return new ExpressionResult()
-                {
-                    Value = result.Value,
-                    Type = result.Type,
-                };
-            }
-
-            if (expression is Function function)
-            {
-                return RunFunction(function);
-            }
-
-            throw new Exception("Unexpected expression: " + expression.GetType());
+                Value = result.Value,
+                Type = result.Type,
+            };
         }
 
         private ExpressionResult RunFunction(Function function)
         {
             var builtInFunction = FindFunction(function);
 
-            var functionParams = new List<ExpressionResult>();
-            foreach (var functionParam in function.Params)
-            {
-                functionParams.Add(Run(functionParam));
-            }
+            var functionParams = function.Params.Select(functionParam => Run(functionParam)).ToList();
 
             return builtInFunction.Execute(functionParams);
         }
