@@ -21,8 +21,11 @@ namespace KeenInterpreter.Functions.Static
 
             return new ExpressionResult
             {
-                Value = value,
-                Type = DataType.Number,
+                Value = new StoredScalarVariable
+                {
+                    Value = value,
+                    Type = DataType.Number,
+                }
             };
         }
 

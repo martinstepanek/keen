@@ -23,14 +23,14 @@ namespace KeenInterpreter.Functions
 
         private bool CheckParameterTypes(List<ExpressionResult> parameters)
         {
-            for (int i = 0; i < parameters.Count; i++)
+            /*for (int i = 0; i < parameters.Count; i++)
             {
                 DataType type = i < ParameterTypes.Count ? ParameterTypes[i] : ParameterTypes[^1];
                 if (type != parameters[i].Type)
                 {
                     return false;
                 }
-            }
+            }*/
 
             return true;
         }

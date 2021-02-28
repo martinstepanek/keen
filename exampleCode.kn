@@ -1,3 +1,5 @@
+['aaa', 'bbb', 'ccc'].concat().print();
+
 numberValue.is(1);
 result.is(numberValue.plus(5).plus(numberValue));
 result.print();
@@ -5,6 +7,7 @@ result.print();
 stringValue.is('Hello');
 greeting.is(stringValue.concat(' world!'));
 greeting.print();
+
 
 
 

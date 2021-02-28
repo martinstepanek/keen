@@ -115,6 +115,20 @@ namespace KeenTokenizer
                     _currentToken = new Comma();
                     StashCurrentToken();
                 }
+                
+                if (ch == '[')
+                {
+                    StashCurrentToken();
+                    _currentToken = new OpeningSquareBracket();
+                    StashCurrentToken();
+                }
+                
+                if (ch == ']')
+                {
+                    StashCurrentToken();
+                    _currentToken = new ClosingSquareBracket();
+                    StashCurrentToken();
+                }
             }
 
             StashCurrentToken();

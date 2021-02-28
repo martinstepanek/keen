@@ -10,15 +10,20 @@ namespace KeenInterpreter.Functions
 
         protected override ExpressionResult Run(List<ExpressionResult> parameters)
         {
-            double sum = parameters.Aggregate<ExpressionResult, double>(0, (current, parameter) => current + int.Parse(parameter.Value));
+            double sum =
+                parameters.Aggregate<ExpressionResult, double>(0,
+                    (current, parameter) => current + int.Parse((parameter.Value as StoredScalarVariable).Value)); // TODO refactor
 
             return new ExpressionResult()
             {
-                Value = sum.ToString(),
-                Type = DataType.Number,
+                Value = new StoredScalarVariable
+                {
+                    Value = sum.ToString(),
+                    Type = DataType.Number,
+                }
             };
         }
-        
+
         protected override List<DataType> ParameterTypes => new List<DataType> {DataType.Number};
     }
 }

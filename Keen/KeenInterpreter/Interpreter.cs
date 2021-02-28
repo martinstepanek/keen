@@ -36,18 +36,38 @@ namespace KeenInterpreter
             switch (expression)
             {
                 case Literal literal:
+                {
                     return new ExpressionResult
                     {
-                        Value = literal.Value,
-                        Type = literal.Type,
+                        Value = new StoredScalarVariable
+                        {
+                            Value = literal.Value,
+                            Type = literal.Type,
+                        },
                     };
+                }
                 case Variable variable:
                 {
                     var storedVariable = _variables[variable.Name];
                     return new ExpressionResult
                     {
-                        Value = storedVariable.Value,
-                        Type = storedVariable.Type,
+                        Value = storedVariable
+                    };
+                }
+                case Collection collection:
+                {
+                    var storedVariables = new List<StoredVariable>();
+                    foreach (var collectionExpression in collection.Expressions)
+                    {
+                        storedVariables.Add(Run(collectionExpression).Value);
+                    }
+
+                    return new ExpressionResult
+                    {
+                        Value = new StoredCollectionVariable
+                        {
+                            StoredVariables = storedVariables,
+                        }
                     };
                 }
                 case Assignment assignment:
@@ -62,17 +82,8 @@ namespace KeenInterpreter
         private ExpressionResult RunAssignment(Assignment assignment)
         {
             var result = Run(assignment.Expression);
-            var storedVariables = new StoredVariable
-            {
-                Value = result.Value,
-                Type = result.Type,
-            };
-            _variables.Add(assignment.VariableName, storedVariables);
-            return new ExpressionResult
-            {
-                Value = result.Value,
-                Type = result.Type,
-            };
+            _variables.Add(assignment.VariableName, result.Value);
+            return result;
         }
 
         private ExpressionResult RunFunction(Function function)

@@ -12,13 +12,23 @@ namespace KeenInterpreter.Functions
         {
             foreach (var parameter in parameters)
             {
-                Console.WriteLine(parameter.Value);
+                if (parameter.Value is StoredScalarVariable scalarVariable)
+                {
+                    Console.WriteLine(scalarVariable.Value);
+                }
+                if (parameter.Value is StoredCollectionVariable collectionVariable) // TODO refactor
+                {
+                    Console.WriteLine(collectionVariable);
+                }
             }
 
             return new ExpressionResult()
             {
-                Value = "1",
-                Type = DataType.Number,
+                Value = new StoredScalarVariable
+                {
+                    Value = "1",
+                    Type = DataType.Number,
+                }
             };
         }
 
