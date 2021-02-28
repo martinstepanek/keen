@@ -108,6 +108,13 @@ namespace KeenTokenizer
                     _currentToken = new Dot();
                     StashCurrentToken();
                 }
+
+                if (ch == ',')
+                {
+                    StashCurrentToken();
+                    _currentToken = new Comma();
+                    StashCurrentToken();
+                }
             }
 
             StashCurrentToken();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using KeenTokenizer.Tokens;
 
 namespace KeenAbstractSyntaxParser
@@ -62,7 +63,7 @@ namespace KeenAbstractSyntaxParser
 
         private Node GetRowNode(List<Token> tokens)
         {
-            var bracketPairs = GetBracketPairs(tokens); 
+            var bracketPairs = GetBracketPairs(tokens);
             var node = GetNode(bracketPairs, tokens, 0, tokens.Count - 1);
             return node;
         }
@@ -73,7 +74,7 @@ namespace KeenAbstractSyntaxParser
             {
                 return null;
             }
-            
+
             var lastIndex = to;
             var lastToken = tokens[lastIndex];
 
@@ -84,20 +85,29 @@ namespace KeenAbstractSyntaxParser
                 var parent = tokens[bracketPair!.From - 1]; // function name
                 var firstChildIndex = bracketPair.From - 3;
                 var firstChild = tokens[firstChildIndex]; // function name, dot and variable name
-
+                Node childNode = null;
+                
                 node.Value = parent;
 
                 if (firstChild is ClosingBracket)
                 {
                     var innerFrom = bracketPair.Parent?.From + 1 ?? 0;
-                    node.FirstChild = GetNode(bracketPairs, tokens, innerFrom, firstChildIndex);
+                    childNode = GetNode(bracketPairs, tokens, innerFrom, firstChildIndex);
+                    if (childNode != null)
+                    {
+                        node.Children.Add(childNode);
+                    }
                 }
                 else
                 {
-                    node.AddFirstChild(firstChild);
+                    node.Children.Add(new Node {Value = firstChild});
                 }
 
-                node.SecondChild = GetNode(bracketPairs, tokens, bracketPair.From + 1, bracketPair.To - 1);
+                childNode = GetNode(bracketPairs, tokens, bracketPair.From + 1, bracketPair.To - 1);
+                if (childNode != null)
+                {
+                    node.Children.Add(childNode);
+                }
 
                 return node;
             }

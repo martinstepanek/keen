@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using KeenAbstractSyntaxParser;
 using KeenActionParser.Expressions;
 using KeenTokenizer.Tokens;
@@ -35,7 +36,7 @@ namespace KeenActionParser
         {
             if (node.Value is Word)
             {
-                if (node.FirstChild != null)
+                if (node.Children.Count > 0)
                 {
                     if (node.Value.Value == "is")
                     {
@@ -64,9 +65,12 @@ namespace KeenActionParser
                         function.Params.Add(firstChildExpression);
                     }
 
-                    if (node.SecondChild != null)
+                    if (node.Children.Count > 1)
                     {
-                        function.Params.Add(CreateExpression(node.SecondChild));
+                        foreach (var child in node.Children.Skip(1))
+                        {
+                            function.Params.Add(CreateExpression(child));
+                        }
                     }
 
                     return function;

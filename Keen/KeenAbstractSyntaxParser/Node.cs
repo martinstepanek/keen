@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using KeenTokenizer.Tokens;
 
 namespace KeenAbstractSyntaxParser
@@ -6,17 +7,10 @@ namespace KeenAbstractSyntaxParser
     {
         public Token Value { get; set; }
 
-        public Node FirstChild { get; set; }
-        public Node SecondChild { get; set; }
+        public List<Node> Children = new List<Node>();
 
-        public void AddFirstChild(Token value)
-        {
-            FirstChild = new Node {Value = value};
-        }
-        
-        public void AddSecondChild(Token value)
-        {
-            SecondChild = new Node {Value = value};
-        }
+        public Node FirstChild => Children.Count > 0 ? Children[0] : null;
+        public Node SecondChild => Children.Count > 1 ? Children[1] : null;
+
     }
 }
